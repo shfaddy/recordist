@@ -1,0 +1,36 @@
+{
+  "name": "@shfaddy/recordist",
+  "version": "1.0.0",
+  "description": "Shaikh Faddy's Recordist",
+  "keywords": [
+    "shfaddy",
+    "shaikhfaddy",
+    "recordist",
+    "framework",
+    "functional",
+    "scenarios",
+    "music",
+    "sound",
+    "versatile",
+    "recursive",
+    "recursion"
+  ],
+  "homepage": "https://github.com/shfaddy/recordist#readme",
+  "bugs": {
+    "url": "https://github.com/shfaddy/recordist/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shfaddy/recordist.git"
+  },
+  "license": "Unlicense",
+  "author": "Shaikh Faddy <shfaddy@gmail.com> (https://github.com/shfaddy#README)",
+  "type": "module",
+  "exports": {
+    ".": "./scenario/index.js"
+  },
+  "bin": "./server.js",
+  "dependencies": {
+    "@shfaddy/scenarist": "file:../scenarist"
+  }
+}
