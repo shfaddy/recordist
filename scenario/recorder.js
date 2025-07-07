@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 
 export default class Recorder {
@@ -6,13 +6,6 @@ export default class Recorder {
 constructor ( details ) {
 
 this .details = Object .assign ( details, { recorder: this } );
-
-};
-
-path = {
-
-recorder: 'recorder.csd',
-recording: 'recording.wav'
 
 };
 
@@ -24,9 +17,16 @@ return;
 if ( argv .length )
 throw `I don't know what you mean by: "${ argv .join ( ' ' ) }"?`;
 
-const { tempo, measure } = this .details .clock;
+const { recordist, clock, score } = this .details;
+const path = recordist .title + '.csd';
+let take;
 
-await writeFile ( this .path .recorder, `
+try { take = parseInt ( await readFile ( '.take', 'utf8' ) ) } catch ( _ ) {}
+
+if ( isNaN ( take ) )
+take = 0;
+
+await writeFile ( path, `
 
 <CsoundSynthesizer>
 
@@ -48,13 +48,19 @@ instr recorder
 
 aRecording inch 2
 
-fout "${ this .path .recording }", -1, aRecording
+fout "${ recordist .title }.${ ++take }.wav", -1, aRecording
+
+endin
+
+instr clock
+
+giMeasure init p4
 
 endin
 
 instr beep
 
-schedule "beep", p3, p3, p4, p5
+schedule "beep", giMeasure, p3, p4, p5
 
 p3 *= p4
 
@@ -68,11 +74,18 @@ outch 1, aNote
 
 endin
 
-scoreline_i {{
+i_ readscore {{
 
-i "recorder" 0 10000
+#define measure #[${ clock .measure } * 60 / ${ clock .tempo }]#
+#define key #${ recordist .key }#
 
-i "beep" 0 ${ measure * 60 / tempo } ${ 1/4 } 60
+i "clock" 0 0 $measure
+
+i "recorder" 0 -1
+
+v $measure
+
+${ score .join ( '\n' ) }
 
 }}
 
@@ -82,7 +95,9 @@ i "beep" 0 ${ measure * 60 / tempo } ${ 1/4 } 60
 
 ` .trim (), 'utf8' );
 
-this .engine = spawn ( 'csound', [ this .path .recorder ], { /* stdio: 'inherit' */ } );
+writeFile ( '.take', take .toString (), 'utf8' );
+
+this .engine = spawn ( 'csound', [ path ], { /* stdio: 'inherit' */ } );
 
 _ .interrupt .then (
 

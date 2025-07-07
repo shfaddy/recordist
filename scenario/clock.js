@@ -1,6 +1,10 @@
-export default class Clock {
+import Device from './device.js';
+
+export default class Clock extends Device {
 
 constructor ( details ) {
+
+super ();
 
 this .details = Object .assign ( details, { clock: this } );
 
@@ -8,33 +12,23 @@ this .details = Object .assign ( details, { clock: this } );
 
 tempo = 120;
 
-$at ( _, ... argv ) {
-
-if ( ! argv .length )
-throw "At what tempo?";
-
-if ( isNaN ( argv [ 0 ] ) )
-throw `Cannot set tempo to the value of ${ argv .shift () }`;
-
-this .tempo = parseFloat ( argv .shift () );
-
-return _ .play ( _, ... argv );
-
-};
+$tempo ( _, ... argv ) { return _ .play ( _, Symbol .for ( 'parameter' ), 'tempo', ... argv ) };
 
 measure = 2;
 
-$over ( _, ... argv ) {
+$measure ( _, ... argv ) { return _ .play ( _, Symbol .for ( 'parameter' ), 'measure', ... argv ) };
+
+$_value ( _, parameter, ... argv ) {
 
 if ( ! argv .length )
-throw "Over which measure?";
+return this [ parameter ];
 
-if ( isNaN ( argv [ 0 ] ) )
-throw `Cannot set measure to the value of ${ argv .shift () }`;
+if ( isNaN ( argv [ 0 ] [ 0 ] ) )
+throw `Cannot set ${ parameter } to the value of ${ argv .shift () }`;
 
-this .measure = parseFloat ( argv .shift () );
+this [ parameter ] = argv .shift ();
 
-return _ .play ( _, ... argv );
+return _ .play ( parameter );
 
 };
 
