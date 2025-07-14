@@ -27,7 +27,8 @@
   "author": "Shaikh Faddy <shfaddy@gmail.com> (https://github.com/shfaddy#README)",
   "type": "module",
   "exports": {
-    ".": "./scenario/index.js"
+    ".": "./scenario/index.js",
+    "./*": "./scenario/*.js"
   },
   "bin": "./server.js",
   "dependencies": {

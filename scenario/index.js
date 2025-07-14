@@ -1,7 +1,7 @@
-import Device from './device.js';
-import Clock from './clock.js';
-import Recorder from './recorder.js';
-import Player from './player.js';
+import Device from '@shfaddy/recordist/device';
+import Clock from '@shfaddy/recordist/clock';
+import Engine from '@shfaddy/recordist/engine';
+import Player from '@shfaddy/recordist/player';
 
 export default class Recordist extends Device {
 
@@ -18,7 +18,7 @@ score: []
 
 this .$clock = new Clock ( details );
 this .$beep = new Player ( Object .assign ( Object .create ( details ), { instrument: 'beep' } ) );
-this .$record = new Recorder ( details );
+this .$record = new Engine ( details );
 
 };
 
